@@ -1,0 +1,48 @@
+/* current-song-basic (v2) — faithful port of RockSniffer current_song_v2. */
+@font-face {
+  font-family: "Open Sans";
+  src: url("/api/plugins/stream_kit/assets/current-song-basic/OpenSans.ttf") format("truetype-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+.popup {
+  width: 300px;
+  display: flex;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 2px 6px;
+  font-family: "Open Sans", sans-serif;
+  font-size: 20px;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+.popup.show { opacity: 1; }
+
+.mainContainer { flex-grow: 1; }
+a { -webkit-text-stroke: 0.2px black; }
+a.songName { font-size: 26px; }
+
+img.albumArt { width: 100%; display: block; }
+img.albumArt.hide { display: none; }
+
+.timer { display: flex; flex-direction: column; }
+.timerBar { background-color: black; height: 8px; width: 100%; border: 1px solid lightgrey; position: relative; }
+.timerBarSection {
+  height: 8px; position: absolute; background-color: red; top: 0;
+  opacity: 0.6; border: 0 solid black; border-left-width: 1px; border-right-width: 1px;
+}
+.timerBarSection.green { background-color: green; }
+.timerBarSection.transparent { background-color: transparent; }
+.timerBarInner { background-color: white; height: 100%; }
+.timestamps { display: flex; justify-content: space-between; font-size: 16px; }
+
+/* MODE 1 */
+.sectionContainer { position: relative; height: 10px; }
+.section {
+  height: 10px; position: absolute; top: 0;
+  border: 0 solid black; border-left-width: 1px; border-right-width: 1px;
+}
+.feedback { font-size: 16px; opacity: 0.9; }

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stream Kit — Now Playing</title>
+  <link rel="stylesheet" href="/api/plugins/stream_kit/assets/core/base.css" />
+  <link rel="stylesheet" href="/api/plugins/stream_kit/assets/nowplaying/style.css" />
+</head>
+<body class="sk-overlay">
+  <!--
+    Point an OBS Browser Source at:
+      http://<slopsmith-host>/api/plugins/stream_kit/assets/nowplaying/index.html
+    Use the http:// player host (not an https-fronted domain) if you also want
+    browser-direct OBS scene control from the player tab — see the architecture
+    doc on mixed-content. Theme by overriding the --sk-* CSS variables.
+  -->
+  <div id="sk-nowplaying" class="sk-card sk-hidden">
+    <div class="sk-accentbar"></div>
+    <div class="sk-body">
+      <div class="sk-row sk-eyebrow">
+        <span id="sk-arrangement" class="sk-arrangement"></span>
+        <span id="sk-instrument-detail" class="sk-instrument-detail"></span>
+        <span id="sk-phase" class="sk-phase"></span>
+      </div>
+      <div id="sk-title" class="sk-title"></div>
+      <div id="sk-artist" class="sk-artist"></div>
+      <div id="sk-stats" class="sk-stats sk-hidden">
+        <span id="sk-accuracy" class="sk-accuracy"></span>
+        <span id="sk-streak" class="sk-streak"></span>
+      </div>
+      <div class="sk-progress"><div id="sk-progress-fill" class="sk-progress-fill"></div></div>
+    </div>
+  </div>
+  <script src="/api/plugins/stream_kit/assets/core/sk-overlay-core.js"></script>
+  <script src="/api/plugins/stream_kit/assets/nowplaying/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Stream Kit — OBS Scene Control</title>
+  <link rel="stylesheet" href="/api/plugins/stream_kit/assets/core/base.css" />
+  <link rel="stylesheet" href="/api/plugins/stream_kit/assets/scene-control/style.css" />
+</head>
+<body class="sk-overlay">
+  <!-- Run this as a DEDICATED OBS browser source or dock — NOT inside a scene it
+       switches. It connects to obs-websocket v5 (local ws://, no mixed content)
+       and sets the program scene from the producer phase feed. -->
+  <div class="sc-panel">
+    <div class="sc-title">Stream Kit · Scene Control</div>
+    <div class="sc-row"><span class="sc-k">OBS</span><span class="sc-v" id="obs">starting…</span></div>
+    <div class="sc-row"><span class="sc-k">Phase</span><span class="sc-v" id="phase">—</span></div>
+    <div class="sc-row"><span class="sc-k">Scene</span><span class="sc-v" id="scene">—</span></div>
+    <div class="sc-note" id="note"></div>
+  </div>
+  <script src="/api/plugins/stream_kit/assets/core/sk-overlay-core.js"></script>
+  <script src="/api/plugins/stream_kit/assets/scene-control/script.js"></script>
+</body>
+</html>

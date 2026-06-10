@@ -1,0 +1,51 @@
+/* now-playing overlay styles */
+.sk-card {
+  display: inline-flex;
+  min-width: 360px;
+  max-width: 560px;
+  background: var(--sk-bg);
+  border-radius: var(--sk-radius);
+  overflow: hidden;
+  box-shadow: var(--sk-shadow);
+  backdrop-filter: blur(8px);
+}
+
+.sk-accentbar { width: 6px; flex: 0 0 6px; background: var(--sk-accent); }
+
+.sk-body { padding: 14px 18px 16px; color: var(--sk-fg); width: 100%; }
+
+.sk-row { display: flex; align-items: center; gap: 10px; }
+
+.sk-eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sk-fg-dim);
+  margin-bottom: 4px;
+}
+.sk-arrangement { font-weight: 600; color: var(--sk-accent); }
+.sk-instrument-detail { color: var(--sk-fg-dim); }
+.sk-phase { margin-left: auto; color: var(--sk-accent); font-weight: 600; }
+
+.sk-title {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 2px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sk-artist { font-size: 15px; color: var(--sk-fg-dim); margin-bottom: 8px; }
+
+.sk-stats { display: flex; gap: 14px; align-items: baseline; margin-bottom: 10px; }
+.sk-accuracy { font-size: 18px; font-weight: 700; color: var(--sk-accent); }
+.sk-streak { font-size: 13px; color: var(--sk-fg-dim); }
+
+.sk-progress { height: 4px; border-radius: 4px; background: rgba(255, 255, 255, 0.12); overflow: hidden; }
+.sk-progress-fill { height: 100%; width: 0%; background: var(--sk-accent); transition: width 0.25s linear; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sk-progress-fill { transition: none; }
+}

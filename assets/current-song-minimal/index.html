@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Stream Kit — Current Song (Minimal)</title>
+  <link rel="stylesheet" href="/api/plugins/stream_kit/assets/core/base.css" />
+  <link rel="stylesheet" href="/api/plugins/stream_kit/assets/current-song-minimal/style.css" />
+</head>
+<body class="sk-overlay">
+  <!-- Faithful port of RockSniffer's current_song addon. -->
+  <div class="popup" id="popup">
+    <div class="header">
+      <img class="pick" src="/api/plugins/stream_kit/assets/current-song-minimal/rs_pick.png" alt="" />
+      <h1 class="title">CURRENT SONG</h1>
+      <h1 class="accuracy_percentage" id="accuracy"></h1>
+    </div>
+    <div class="content">
+      <img class="album_cover" id="album" alt="" />
+      <div class="song_details">
+        <h1 class="artist_name" id="artist"></h1>
+        <h1 class="song_name" id="song"></h1>
+        <h1 class="album_name" id="albumname"></h1>
+      </div>
+      <div class="progress_bar"><p class="progress_bar_text" id="progress_text"></p><div class="progress_bar_inner" id="progress_fill"></div></div>
+    </div>
+  </div>
+  <script src="/api/plugins/stream_kit/assets/core/sk-overlay-core.js"></script>
+  <script src="/api/plugins/stream_kit/assets/current-song-minimal/script.js"></script>
+</body>
+</html>

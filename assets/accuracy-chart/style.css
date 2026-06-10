@@ -1,0 +1,8 @@
+/* accuracy-chart overlay styles */
+.sk-chart { display: inline-block; background: var(--sk-bg); border-radius: var(--sk-radius);
+      padding: 12px 14px; box-shadow: var(--sk-shadow); color: var(--sk-fg); }
+    .sk-chart .hdr { display: flex; justify-content: space-between; align-items: baseline;
+      font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--sk-fg-dim);
+      margin-bottom: 6px; }
+    .sk-chart .now { color: var(--sk-accent); font-weight: 700; }
+    .sk-chart canvas { display: block; }

@@ -1,0 +1,8 @@
+/* debug overlay styles */
+.sk-debug { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px;
+      color: var(--sk-fg); background: var(--sk-bg); border-radius: var(--sk-radius);
+      padding: 12px 14px; max-width: 560px; white-space: pre-wrap; word-break: break-word; }
+    .sk-debug .k { color: var(--sk-accent); }
+    .sk-debug-version { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px; font-weight: 600; color: var(--sk-accent);
+      max-width: 560px; padding: 0 14px 4px; opacity: 0.85; }

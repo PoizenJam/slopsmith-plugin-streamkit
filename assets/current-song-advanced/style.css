@@ -1,0 +1,32 @@
+/* current-song-advanced (v3.1_LaS) — faithful port of PoizenJam's v3.1 styling. */
+.popup {
+  width: 420px; display: flex; overflow: hidden;
+  background-color: #000; color: white;
+  font-family: "Lucida Console", Courier, monospace; font-size: 14px;
+  opacity: 0; transition: opacity 1s ease;
+}
+.popup.show { opacity: 1; }
+.mainContainer { width: 420px; }
+
+.songInfo { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0 5px; line-height: 20px; }
+.songMarquee { transition: transform 2s ease-in-out; transform: translateX(0); width: 100%; }
+a.songName, a.songDash, a.artistName { color: white; font-size: 18px; white-space: nowrap; }
+
+img.albumArt { width: 100%; display: block; }
+img.albumArt.hide { display: none; }
+
+.stats { display: flex; width: 100%; }
+.statsLeft { display: flex; width: 50%; justify-content: space-between; margin: 0 5px 0 0; }
+.statsRight { display: flex; width: 50%; justify-content: space-between; margin: 0 0 0 5px; }
+.statsNAME { width: 25%; }
+.statsNUM { font-size: 14px; width: 75%; text-align: right; }
+
+.timer { margin: 2px 0 0 0; -webkit-font-smoothing: none; }
+.timerBar { background-color: black; height: 13px; width: 100%; position: relative; }
+.timerBarPhrase { position: absolute; background-color: magenta; bottom: 1px; opacity: 1; border: 0 solid black; border-left-width: 1px; border-right-width: 1px; }
+.timerBarCurrentPhrase { position: absolute; background-color: navy; bottom: 1px; opacity: .6; border: 0 solid black; }
+.timerBarSection { height: 2px; position: absolute; background-color: gold; bottom: -2px; border: 0 solid black; border-left-width: 1px; border-right-width: 1px; }
+.playMarker { position: absolute; background-color: transparent; height: 15px; bottom: 0; border: 0 solid white; border-right-width: 2px; }
+
+.timestamps { display: flex; justify-content: space-between; margin: 2px 0 0 0; }
+.feedback { font-size: 13px; opacity: 0.9; }

@@ -1,0 +1,8 @@
+/* current-measure overlay styles */
+.sk-measure { display: inline-flex; flex-direction: column; align-items: center;
+      background: var(--sk-bg); border-radius: var(--sk-radius); padding: 12px 22px;
+      box-shadow: var(--sk-shadow); color: var(--sk-fg); }
+    .sk-measure .num { font-size: 52px; font-weight: 800; line-height: 1; color: var(--sk-accent); }
+    .sk-measure .num .tot { font-size: 24px; color: var(--sk-fg-dim); font-weight: 600; }
+    .sk-measure .lbl { font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--sk-fg-dim); margin-top: 6px; }

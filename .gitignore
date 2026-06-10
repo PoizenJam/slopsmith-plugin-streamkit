@@ -1,0 +1,20 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Runtime data — created in the app's config dir at runtime, not part of source
+*.sqlite
+*.sqlite3
+*.db
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+
+# Node tooling, if any is added later
+node_modules/

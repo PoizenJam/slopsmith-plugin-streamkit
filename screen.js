@@ -53,6 +53,12 @@
     this.song = null;            // metadata captured at song:ready
     this.tally = freshTally();
     this.scorerKind = null;      // active scorer kind for the current family, or null
+    // Per-phrase / per-section accuracy ladder (current attempt) + previous best.
+    this.sections = [];          // [{name, time}] window starts
+    this.phrases = [];           // [{start_time, end_time, ...}]
+    this.sectionTally = [];      // parallel to sections: {hits, misses}
+    this.phraseTally = [];       // parallel to phrases:  {hits, misses}
+    this.best = null;            // previous-best for the current arrangement
     this.playAccum = 0;          // seconds played (paused time excluded)
     this.lastPlayStart = null;
     this.clean = true;
@@ -90,8 +96,10 @@
       this.metadataTs = tsNow();   // metadata loaded
       this.startTs = null;         // set on first play
       this.paused = false;
+      this.sectionTally = []; this.phraseTally = []; this.best = null;
       this.set({ phase: "loaded" });
-      this.captureChart();         // beats/sections (once per song, separate channel)
+      this.captureChart();         // beats/sections/phrases (once per song)
+      this.fetchBest();            // previous-best for this arrangement
     });
 
     // An arrangement change can change the *family* (Lead → Drums), so
@@ -105,6 +113,7 @@
       this.reclassify();
       this.set({});
       this.captureChart();
+      this.fetchBest();
     });
 
     const onStart = () => { if (!this.startTs) this.startTs = tsNow(); this.lastPlayStart = now(); this.set({ phase: "playing" }); };
@@ -134,8 +143,15 @@
   Producer.prototype.bindScorerEvents = function () {
     const inc = (delta) => {
       if (!this.scorerKind || !this.song) return;
-      if (delta === "hit") { this.tally.hits++; this.tally.streak++; this.tally.best = Math.max(this.tally.best, this.tally.streak); }
+      const hit = delta === "hit";
+      if (hit) { this.tally.hits++; this.tally.streak++; this.tally.best = Math.max(this.tally.best, this.tally.streak); }
       else { this.tally.misses++; this.tally.streak = 0; }
+      // Attribute to the current section + phrase window by playhead time.
+      const t = this.state.time || 0, key = hit ? "hits" : "misses";
+      const si = windowIndexAt(this.sections, t, true);
+      if (si >= 0 && this.sectionTally[si]) this.sectionTally[si][key]++;
+      const pi = windowIndexAt(this.phrases, t, false);
+      if (pi >= 0 && this.phraseTally[pi]) this.phraseTally[pi][key]++;
     };
     for (const kind of Object.keys(SCORERS)) {
       const s = SCORERS[kind];
@@ -177,6 +193,55 @@
     }
     post("song", { songId: song.songKey || null, beats: beats, sections: sections,
                    phrases: phrases, lyrics: lyrics });
+    // Keep local copies for live ladder attribution + size the tallies to match.
+    this.sections = sections;
+    this.phrases = phrases;
+    this.sectionTally = sections.map(() => ({ hits: 0, misses: 0 }));
+    this.phraseTally = phrases.map(() => ({ hits: 0, misses: 0 }));
+  };
+
+  // Previous-best for the current arrangement (for the ladder's relative-to-best
+  // coloring). Per-arrangement because tuning/notes differ across arrangements.
+  Producer.prototype.fetchBest = function () {
+    const song = this.song;
+    if (!song || !song.songKey) return;
+    const q = `tracker?song_id=${encodeURIComponent(song.songKey)}&arrangement=${encodeURIComponent(song.arrangement || "")}`;
+    fetch(api(q)).then((r) => r.json())
+      .then((b) => { if (this.song === song) this.best = (b && b.accuracy != null) ? b : null; })
+      .catch(() => {});
+  };
+
+  // Build the live ladder: per-section + per-phrase current accuracy, the
+  // derived phrase grade, and the previous-best for relative coloring.
+  Producer.prototype.buildLadder = function () {
+    const best = this.best || {}, bSec = best.sections || {}, bPhr = best.phrases || {};
+    const acc = (t) => { const n = (t.hits + t.misses); return n ? (100 * t.hits / n) : null; };
+    const sections = this.sections.map((s, i) => {
+      const a = acc(this.sectionTally[i] || { hits: 0, misses: 0 });
+      return { name: s.name, accuracy: a, best: bSec[s.name] != null ? bSec[s.name] : null };
+    });
+    const phrases = this.phrases.map((p, i) => {
+      const a = acc(this.phraseTally[i] || { hits: 0, misses: 0 });
+      return { index: i, accuracy: a, grade: gradeFromAccuracy(a), best: bPhr[i] != null ? bPhr[i] : null };
+    });
+    const cur = computeStats(this.tally).accuracy;
+    const bOver = best.accuracy != null ? best.accuracy : null;
+    return {
+      sections, phrases,
+      overall: { accuracy: cur, best: bOver,
+                 relative: (bOver != null && cur != null) ? Math.round((cur - bOver) * 10) / 10 : null },
+    };
+  };
+
+  // Persist this run as the new best if it beat the stored one (backend gates).
+  Producer.prototype.postBest = function () {
+    if (!this.scorerKind || !this.song || !this.song.songKey) return;
+    const ladder = this.buildLadder();
+    const sections = {}, phrases = {};
+    ladder.sections.forEach((s) => { if (s.accuracy != null) sections[s.name] = Math.round(s.accuracy * 10) / 10; });
+    ladder.phrases.forEach((p) => { if (p.accuracy != null) phrases[p.index] = Math.round(p.accuracy * 10) / 10; });
+    post("tracker", { song_id: this.song.songKey, arrangement: this.song.arrangement || "",
+                      accuracy: ladder.overall.accuracy, sections, phrases });
   };
 
   Producer.prototype.accumPlay = function () {
@@ -194,7 +259,13 @@
       this.state.instrument = this.song.instrument; // namespaced, family-discriminated
     }
     this.state.scored = !!this.scorerKind;
-    if (this.scorerKind) this.state.stats = computeStats(this.tally);
+    if (this.scorerKind) {
+      this.state.stats = computeStats(this.tally);
+      this.state.totalNotes = arrangementNoteCount(this.song);
+      this.state.ladder = this.buildLadder();   // per-section/phrase + best
+    } else {
+      this.state.ladder = null;
+    }
     this.publish();
   };
 
@@ -236,6 +307,7 @@
       paused: this.paused,
     };
     post("playthrough", rec);
+    this.postBest();              // update previous-best if this run beat it
     this.set({ phase: "results" });
   };
 
@@ -317,6 +389,34 @@
              accuracy: total ? +(100 * t.hits / total).toFixed(1) : null };
   }
 
+  // Index of the section/phrase window containing time `t`.
+  //  - sections (startOnly=true): list of {name, time}; window i = [time_i, time_{i+1})
+  //  - phrases  (startOnly=false): list of {start_time, end_time}; t in [start, end)
+  function windowIndexAt(list, t, startOnly) {
+    if (!list || !list.length) return -1;
+    if (startOnly) {
+      let idx = -1;
+      for (let i = 0; i < list.length; i++) { if ((list[i].time || 0) <= t) idx = i; else break; }
+      return idx;
+    }
+    for (let i = 0; i < list.length; i++) {
+      const s = list[i].start_time != null ? list[i].start_time : 0;
+      const e = list[i].end_time != null ? list[i].end_time : Infinity;
+      if (t >= s && t < e) return i;
+    }
+    return -1;
+  }
+
+  // Derive a RockSniffer-style phrase grade from accuracy. Slopsmith has no
+  // engine phrase grading, so these thresholds are stream_kit's own rubric.
+  function gradeFromAccuracy(a) {
+    if (a == null) return null;
+    if (a >= 100) return "Perfect";
+    if (a >= 90) return "Good";
+    if (a >= 50) return "Passed";
+    return "Failed";
+  }
+
   // ── Helpers ────────────────────────────────────────────────────────────────
   function now() { return performance.now(); }
   function round1(n) { return Math.round(n * 10) / 10; }
@@ -363,6 +463,13 @@
     }
     const root2 = document.getElementById("plugin-stream_kit");
     if (root2 && !root2.dataset.skHist) { root2.dataset.skHist = "1"; refreshHistory(root2); }
+    if (root2 && !root2.dataset.skVer) {
+      root2.dataset.skVer = "1";
+      const v = root2.querySelector("[data-sk-version]");
+      if (v) fetch(api("version")).then(r => r.json())
+        .then(d => { v.textContent = "stream_kit v" + (d.version || "?"); })
+        .catch(() => { v.textContent = "stream_kit (version unknown)"; });
+    }
   }
 
   function refreshHistory(root) {

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Stream Kit — Current Song (Basic)</title>
+  <link rel="stylesheet" href="/api/plugins/stream_kit/assets/core/base.css" />
+  <link rel="stylesheet" href="/api/plugins/stream_kit/assets/current-song-basic/style.css" />
+</head>
+<body class="sk-overlay">
+  <!-- Faithful port of RockSniffer current_song_v2. -->
+  <div class="popup" id="popup">
+    <div class="mainContainer">
+      <div id="mode0">
+        <div class="songTitle">
+          <a class="songName" id="song"></a><br />
+          <a class="artistName" id="artist"></a>
+        </div>
+        <img class="albumArt" id="art" alt="" />
+        <div class="timer">
+          <div class="timerBar" id="bar"><div class="timerBarInner" id="fill"></div></div>
+          <div class="timestamps">
+            <a class="timestamp" id="cur"></a>
+            <a class="accuracy" id="acc"></a>
+            <a class="timestamp" id="tot"></a>
+          </div>
+        </div>
+      </div>
+      <div id="mode1" style="display:none">
+        <div class="songTitle">
+          <a class="songName" id="pSong"></a><br />
+          <a class="artistName" id="pArtist"></a>
+        </div>
+        <a id="pAcc"></a>
+        <div class="sectionContainer" id="pBar"></div>
+        <div id="bestWrap" style="display:none">
+          <a id="bestLine"></a>
+          <div class="feedback">
+            <div id="feedPrefix"></div>
+            <div id="feedMsg"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="/api/plugins/stream_kit/assets/core/sk-overlay-core.js"></script>
+  <script src="/api/plugins/stream_kit/assets/current-song-basic/script.js"></script>
+</body>
+</html>

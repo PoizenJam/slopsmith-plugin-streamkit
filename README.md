@@ -17,7 +17,7 @@ https://github.com/PoizenJam/slopsmith-plugin-streamkit
 slopsmith downloads, installs, and reloads. Then point an OBS **Browser Source** at:
 
 ```
-http://<your-slopsmith-host>/api/plugins/stream_kit/assets/overlay-nowplaying.html
+http://<your-slopsmith-host>/api/plugins/stream_kit/assets/nowplaying/index.html
 ```
 
 Use the **http://** player host (not an https-fronted domain) so a future
@@ -27,16 +27,33 @@ browser-direct OBS control connection isn't blocked by mixed content.
 
 - **Producer**: subscribes to `window.slopsmith` song lifecycle events and pushes
   live now-playing state to the plugin backend.
-- **Overlays** (OBS Browser Sources, SSE-fed, in `assets/`, sharing
-  `sk-overlay-core.js`):
-  - `overlay-nowplaying.html` — compact now-playing + instrument detail + accuracy
-  - `overlay-current-song.html` — album art, title/artist/album/year, arrangement
-  - `overlay-note-streaks.html` — current & best streak
-  - `overlay-accuracy-chart.html` — accuracy over the song (self-contained canvas)
-  - `overlay-debug.html` — live feed dump (the `debug_addon` analog)
+- **Overlays** (OBS Browser Sources, SSE-fed). Each lives in its own folder under
+  `assets/` with its own `index.html` + `style.css` + `script.js`; shared SSE
+  client and base theme live in `assets/core/` (`sk-overlay-core.js`, `base.css`):
+  - `nowplaying/` — compact now-playing + instrument detail + accuracy
+  - `current-song/` — album art, title/artist/album/year, arrangement
+  - `vocals/` — timed-syllable karaoke (needs the `getLyrics()` core accessor)
+  - `note-streaks/` — current & best streak
+  - `accuracy-chart/` — accuracy over the song (self-contained canvas)
+  - `current-measure/` — current measure / total (from the chart-structures channel)
+  - `timeline/` — section segments + playhead (from the chart-structures channel)
+  - `debug/` — live feed dump (the `debug_addon` analog)
 - **Playthrough history**: every finished song is persisted with **RockSniffer
   `PlaythroughHistory` parity** — identical `playthrough_history` SQLite table and
   CSV (same columns/order/quoting, three timestamps; Score-Attack columns blank).
+
+## Asset layout
+
+```
+assets/
+  core/          sk-overlay-core.js (SSE + formatters), base.css (vars + base classes)
+  <overlay>/     index.html + style.css + script.js   (one folder per overlay)
+  plugin.css     in-app dashboard styles
+```
+
+A new overlay = a new folder with those three files; reference `core/base.css` +
+`core/sk-overlay-core.js`, add a `render(state)` via `SK.onState`. No shared file
+grows as overlays are added.
 
 ## Forward compatibility across instruments
 
@@ -60,19 +77,15 @@ and the overlay rendering all adapt without code changes.
 
 ## Status
 
-Done: now-playing, current-song, note-streaks, accuracy-chart, current-measure,
-timeline, vocals (karaoke), and debug overlays; the per-song chart-structures
-channel (beats/sections/phrases/lyrics); RockSniffer-parity playthrough history
-(SQLite + CSV); note-detector accuracy/streak tally.
+Overlays: now-playing, current-song-minimal, current-song (v4), current-song-basic
+(v2), current-song-advanced (v3.1), current-song-8bit (Arcade), note-streaks,
+accuracy-chart, current-measure, timeline, vocals, debug. Plus the playthrough
+tracker (per-section/phrase accuracy + previous-best), RockSniffer-parity history
+(SQLite + CSV), and the chart-structures channel.
 
-The **vocals** overlay needs a one-line `getLyrics()` accessor on the highway
-(`slopsmith-getLyrics-accessor.patch`, mirrors `getBeats()`/`getSections()`) —
-it degrades to blank without it, lighting up once the patch lands.
-
-Next: the per-phrase/section accuracy ladder + previous-best tracker (powers
-current_song v3.1/v4 and the Learn-a-Song Arcade overlay) — it needs phrase
-exposure the same way (no `getPhrases()` today). OBS scene automation remains
-deferred.
+Soft deps: vocals needs the `getLyrics()` core accessor; per-phrase/section
+coloring needs a note detector installed; reference-pitch/centOffset comes via
+PR #770. OBS scene automation remains deferred.
 
 ## License
 

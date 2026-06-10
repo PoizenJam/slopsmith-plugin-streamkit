@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Stream Kit — Current Song</title>
+  <link rel="stylesheet" href="/api/plugins/stream_kit/assets/core/base.css" />
+  <link rel="stylesheet" href="/api/plugins/stream_kit/assets/current-song/style.css" />
+</head>
+<body class="sk-overlay">
+  <!-- Faithful port of RockSniffer current_song_v4. -->
+  <div class="popup" id="popup">
+    <div class="mainContainer">
+      <div id="mode0">
+        <div class="songTitle">
+          <a class="songName" id="song"></a><br />
+          <a class="artistName" id="artist"></a>
+        </div>
+        <img class="albumArt" id="art" alt="" />
+        <div class="songTitle">
+          <table style="width:100%"><tr>
+            <td id="arrType"></td>
+            <td style="text-align:right" id="tuning"></td>
+          </tr></table>
+        </div>
+        <div class="timer">
+          <div class="timerBar" id="bar"><div class="timerBarInner" id="fill"></div></div>
+          <div class="timestamps"><a class="timestamp" id="cur"></a><a class="timestamp" id="tot"></a></div>
+        </div>
+      </div>
+      <div id="mode1" style="display:none">
+        <div class="songTitle">
+          <a class="songName" id="pSong"></a><br />
+          <a class="artistName" id="pArtist"></a>
+          <table style="width:100%"><tr>
+            <td id="pArr"></td>
+            <td style="text-align:right" id="pTuning"></td>
+          </tr></table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="/api/plugins/stream_kit/assets/core/sk-overlay-core.js"></script>
+  <script src="/api/plugins/stream_kit/assets/current-song/script.js"></script>
+</body>
+</html>

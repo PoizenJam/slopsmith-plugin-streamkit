@@ -1,0 +1,10 @@
+/* vocals overlay styles */
+.vocal { position: relative; overflow: hidden; width: 760px; margin: 0 auto;
+      font-size: 34px; font-weight: 800; text-align: center; color: var(--sk-fg);
+      text-shadow: 0 2px 6px rgba(0,0,0,.6); }
+    .lyric-line { position: absolute; left: 0; right: 0; top: 0; white-space: nowrap;
+      will-change: transform; }
+    .syllable { transition: color .12s ease, opacity .12s ease; }
+    .syllable-future  { color: var(--sk-fg); opacity: .55; }
+    .syllable-current { color: var(--sk-accent); opacity: 1; }
+    .syllable-past    { color: var(--sk-fg); opacity: .9; }

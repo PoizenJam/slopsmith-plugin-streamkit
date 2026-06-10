@@ -1,11 +1,12 @@
 <!-- Injected into a per-plugin <details> on the Settings page. Fragment, not a
-     full doc. Kept honest for v1: OBS scene automation lands in a later
-     milestone, so it's described, not shown as a working control. -->
+     full doc. Includes the working OBS scene-automation controls; the inline
+     <script> runs (Slopsmith revives plugin settings script nodes). -->
 <div class="px-4 pb-4 pt-1 text-sm text-gray-300 space-y-4">
+  <p class="text-xs text-gray-500" id="sk-settings-version">stream_kit</p>
   <div>
     <h4 class="font-medium text-gray-200 mb-1">Overlays</h4>
     <p class="text-gray-400">Add OBS Browser Sources pointing at:</p>
-    <code class="sk-url block mt-1">[host]/api/plugins/stream_kit/assets/overlay-nowplaying.html</code>
+    <code class="sk-url block mt-1">[host]/api/plugins/stream_kit/assets/nowplaying/index.html</code>
   </div>
 
   <div>
@@ -18,10 +19,86 @@
 
   <div>
     <h4 class="font-medium text-gray-200 mb-1">OBS scene automation</h4>
-    <p class="text-gray-400">
-      Planned (next milestone): browser-direct obs-websocket v5 from the player tab,
-      mapping playing / paused / results / browsing states to scenes. Off by default
-      when shipped. Not yet active in this build.
+    <p class="text-gray-400 mb-2">
+      Switches OBS scenes from the live state via obs-websocket v5. Add a
+      <em>dedicated</em> Browser Source or Custom Browser Dock (not inside a scene
+      it switches) pointing at:
+    </p>
+    <code class="sk-url block mb-3">[host]/api/plugins/stream_kit/assets/scene-control/index.html</code>
+
+    <label class="flex items-center gap-2 mb-2">
+      <input type="checkbox" id="sk-obs-enabled" />
+      <span class="text-gray-300">Enable scene automation</span>
+    </label>
+
+    <label class="flex items-center gap-2 mb-2">
+      <input type="checkbox" id="sk-obs-guard" />
+      <span class="text-gray-300">Only switch when already on a mapped scene
+        <span class="text-gray-500">(leaves Intro / Outro / Just Chatting alone)</span></span>
+    </label>
+
+    <div class="grid grid-cols-3 gap-2 mb-2">
+      <input id="sk-obs-host" placeholder="Host" style="background:#1f2430;border:1px solid #353b48;border-radius:4px;padding:4px 6px;color:#e6e6e6;" />
+      <input id="sk-obs-port" placeholder="Port" style="background:#1f2430;border:1px solid #353b48;border-radius:4px;padding:4px 6px;color:#e6e6e6;" />
+      <input id="sk-obs-pass" type="password" placeholder="Password" style="background:#1f2430;border:1px solid #353b48;border-radius:4px;padding:4px 6px;color:#e6e6e6;" />
+    </div>
+
+    <p class="text-gray-400 mb-1">Scene for each state (leave blank to ignore):</p>
+    <div class="space-y-1 mb-2" id="sk-obs-map">
+      <div class="flex items-center gap-2"><span class="text-gray-400 w-32">Menus / library</span><input data-phase="browsing" class="sk-obs-scene" style="flex:1;background:#1f2430;border:1px solid #353b48;border-radius:4px;padding:4px 6px;color:#e6e6e6;" /></div>
+      <div class="flex items-center gap-2"><span class="text-gray-400 w-32">Stopped / idle</span><input data-phase="idle" class="sk-obs-scene" style="flex:1;background:#1f2430;border:1px solid #353b48;border-radius:4px;padding:4px 6px;color:#e6e6e6;" /></div>
+      <div class="flex items-center gap-2"><span class="text-gray-400 w-32">Song loaded</span><input data-phase="loaded" class="sk-obs-scene" style="flex:1;background:#1f2430;border:1px solid #353b48;border-radius:4px;padding:4px 6px;color:#e6e6e6;" /></div>
+      <div class="flex items-center gap-2"><span class="text-gray-400 w-32">Playing</span><input data-phase="playing" class="sk-obs-scene" style="flex:1;background:#1f2430;border:1px solid #353b48;border-radius:4px;padding:4px 6px;color:#e6e6e6;" /></div>
+      <div class="flex items-center gap-2"><span class="text-gray-400 w-32">Paused</span><input data-phase="paused" class="sk-obs-scene" style="flex:1;background:#1f2430;border:1px solid #353b48;border-radius:4px;padding:4px 6px;color:#e6e6e6;" /></div>
+      <div class="flex items-center gap-2"><span class="text-gray-400 w-32">Results</span><input data-phase="results" class="sk-obs-scene" style="flex:1;background:#1f2430;border:1px solid #353b48;border-radius:4px;padding:4px 6px;color:#e6e6e6;" /></div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button id="sk-obs-save" style="background:#9100ff;color:#fff;border:none;border-radius:4px;padding:5px 14px;cursor:pointer;">Save</button>
+      <span id="sk-obs-status" class="text-gray-400"></span>
+    </div>
+    <p class="text-gray-500 mt-2" style="font-size:12px;">
+      The controller reads this config (incl. the obs-websocket password) over the
+      local API — intended for a single-machine setup. Scene names must match OBS exactly.
     </p>
   </div>
+
+  <script>
+  (function () {
+    var base = "/api/plugins/stream_kit/scene-config";
+    var statusEl = document.getElementById("sk-obs-status");
+    var verEl = document.getElementById("sk-settings-version");
+    if (verEl) fetch("/api/plugins/stream_kit/version").then(function (r) { return r.json(); })
+      .then(function (v) { verEl.textContent = "stream_kit v" + (v.version || "?"); })
+      .catch(function () { verEl.textContent = "stream_kit (version unknown)"; });
+    function sceneInputs() { return Array.prototype.slice.call(document.querySelectorAll(".sk-obs-scene")); }
+    fetch(base).then(function (r) { return r.json(); }).then(function (c) {
+      document.getElementById("sk-obs-enabled").checked = !!c.enabled;
+      document.getElementById("sk-obs-guard").checked = c.guard !== false;
+      document.getElementById("sk-obs-host").value = c.host || "localhost";
+      document.getElementById("sk-obs-port").value = c.port || 4455;
+      document.getElementById("sk-obs-pass").value = c.password || "";
+      var map = c.map || {};
+      sceneInputs().forEach(function (i) { i.value = map[i.dataset.phase] || ""; });
+    }).catch(function () { statusEl.textContent = "could not load config"; });
+
+    document.getElementById("sk-obs-save").addEventListener("click", function () {
+      var map = {};
+      sceneInputs().forEach(function (i) { map[i.dataset.phase] = i.value.trim(); });
+      var body = {
+        enabled: document.getElementById("sk-obs-enabled").checked,
+        guard: document.getElementById("sk-obs-guard").checked,
+        host: document.getElementById("sk-obs-host").value.trim() || "localhost",
+        port: parseInt(document.getElementById("sk-obs-port").value, 10) || 4455,
+        password: document.getElementById("sk-obs-pass").value,
+        map: map,
+      };
+      statusEl.textContent = "saving…";
+      fetch(base, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+        .then(function (r) { return r.json(); })
+        .then(function (res) { statusEl.textContent = res.ok ? "saved — changes apply within ~10s" : ("error: " + (res.error || "failed")); })
+        .catch(function () { statusEl.textContent = "save failed"; });
+    });
+  })();
+  </script>
 </div>

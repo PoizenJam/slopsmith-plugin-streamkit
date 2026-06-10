@@ -1,0 +1,68 @@
+/* current-song (minimal) — faithful port of RockSniffer's current_song style.
+ * Original RockSniffer palette kept (dark slate header, translucent body) so it
+ * looks like the original; vw units scale with the OBS source size as before. */
+
+.popup { display: none; }            /* hidden until a song is active */
+.popup.show { display: block; }
+
+.header {
+  width: 100%;
+  height: 5vw;
+  background-color: rgb(40, 56, 72);
+  border-radius: 8px 8px 0 0;
+  border-bottom: 0.5vw solid black;
+  display: flex;
+  align-items: center;
+}
+
+.content {
+  overflow: hidden;
+  padding-left: 2vw;
+  padding-right: 2vw;
+  background-color: rgba(85, 98, 111, 0.84);
+  border-radius: 0 0 7px 7px;
+}
+
+.song_details { width: 74%; }
+
+h1 {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  font-size: 4.5vw;
+  color: white;
+  line-height: 4.3vw;
+  margin: 0;
+}
+
+/* Outlined stroke text — original used a ::before with data-stroke. */
+.stroke { position: relative; z-index: 0; }
+.stroke:before {
+  position: absolute;
+  content: attr(data-stroke);
+  -webkit-text-stroke: 0.1em #000000;
+  z-index: -1;
+}
+
+h1.accuracy_percentage { font-size: 4.5vw !important; padding-left: 1vw; }
+h1.title { display: inline-block; font-size: 3.5vw; color: white; }
+
+img.pick { height: 70%; float: left; padding-right: 1.5vw; margin-left: 7px; }
+
+img.album_cover {
+  width: 23%;
+  float: right;
+  margin: 2vw 0 1vw 0;
+  border-style: solid;
+  border-color: black;
+  border-width: 0.5vw;
+}
+
+.progress_bar {
+  background-color: rgb(40, 56, 72);
+  height: 4vw;
+  font-size: 4vw;
+  margin: 0 0 1vw 0;
+  clear: both;
+  text-align: center;
+}
+.progress_bar_inner { background-color: rgba(95, 108, 121, 0.3); height: 100%; width: 0; }
+.progress_bar_text { padding: 0; margin: 0; height: 0; overflow: visible; color: white; }

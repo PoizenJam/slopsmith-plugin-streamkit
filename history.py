@@ -118,7 +118,65 @@ class Store:
         self.conn.execute(
             "CREATE INDEX IF NOT EXISTS idx_ph_song ON playthrough_history(song_id, timestamp)"
         )
+        # Per-arrangement best attempt, for the previous-best ladder comparison
+        # (the stream_kit analog of RockSniffer's playthrough_tracker storage).
+        # sections / phrases hold per-section / per-phrase accuracy of the best
+        # run, as JSON ({name: acc} / {index: acc}).
+        self.conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS playthrough_best (
+                song_id TEXT NOT NULL,
+                arrangement TEXT NOT NULL,
+                accuracy REAL,
+                sections TEXT,
+                phrases TEXT,
+                updated_at TEXT,
+                PRIMARY KEY (song_id, arrangement)
+            )
+            """
+        )
         self.conn.commit()
+
+    def get_best(self, song_id: str, arrangement: str) -> dict | None:
+        if not (self.enable_sqlite and self.conn is not None) or not song_id:
+            return None
+        row = self.conn.execute(
+            "SELECT accuracy, sections, phrases FROM playthrough_best WHERE song_id=? AND arrangement=?",
+            (song_id, arrangement or ""),
+        ).fetchone()
+        if not row:
+            return None
+        import json
+        return {
+            "accuracy": row[0],
+            "sections": json.loads(row[1]) if row[1] else {},
+            "phrases": json.loads(row[2]) if row[2] else {},
+        }
+
+    def put_best(self, song_id: str, arrangement: str, accuracy, sections: dict, phrases: dict) -> bool:
+        """Upsert the best attempt, but only when this run beats the stored
+        overall accuracy (or there's no stored run). Returns True if written."""
+        if not (self.enable_sqlite and self.conn is not None) or not song_id or accuracy is None:
+            return False
+        import json
+        prev = self.get_best(song_id, arrangement)
+        if prev is not None and prev.get("accuracy") is not None and accuracy <= prev["accuracy"]:
+            return False
+        try:
+            self.conn.execute(
+                """INSERT INTO playthrough_best (song_id, arrangement, accuracy, sections, phrases, updated_at)
+                   VALUES (?, ?, ?, ?, ?, datetime('now'))
+                   ON CONFLICT(song_id, arrangement) DO UPDATE SET
+                     accuracy=excluded.accuracy, sections=excluded.sections,
+                     phrases=excluded.phrases, updated_at=excluded.updated_at""",
+                (song_id, arrangement or "", round(float(accuracy), 1),
+                 json.dumps(sections or {}), json.dumps(phrases or {})),
+            )
+            self.conn.commit()
+            return True
+        except Exception:
+            self.conn.rollback()
+            raise
 
     def record(self, rec: dict) -> int | None:
         """Persist one playthrough to SQLite and/or CSV. `rec` carries the

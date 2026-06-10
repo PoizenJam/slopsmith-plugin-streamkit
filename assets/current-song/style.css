@@ -1,0 +1,35 @@
+/* current-song (v4 default) — faithful port of RockSniffer current_song_v4. */
+.popup {
+  width: 400px;
+  display: flex;
+  overflow: hidden;
+  background-color: #004d4d;
+  color: white;
+  padding: 2px 6px;
+  box-shadow: 4px 4px 8px #000000;
+  font-family: "Verdana", sans-serif;
+  font-size: 20px;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+.popup.show { opacity: 1; }
+
+.mainContainer { flex-grow: 1; }
+a { -webkit-text-stroke: 0.2px black; }
+a.songName { font-size: 26px; }
+
+img.albumArt { width: 100%; display: block; }
+img.albumArt.hide { display: none; }
+
+.timer { display: flex; flex-direction: column; }
+.timerBar { background-color: black; height: 8px; width: 100%; border: 1px solid #006666; position: relative; }
+.timerBarSection {
+  height: 8px; position: absolute; background-color: #009999; top: 0;
+  opacity: 0.6; border: 0 solid black;
+}
+.timerBarSection.passed { background-color: transparent; }
+.timerBarInner { background-color: #009999; height: 100%; }
+.timestamps { display: flex; justify-content: space-between; font-size: 16px; }
+
+table { border-collapse: collapse; }
+td { padding: 0; }

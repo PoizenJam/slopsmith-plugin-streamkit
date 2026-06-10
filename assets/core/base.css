@@ -1,0 +1,16 @@
+/* stream_kit shared overlay base — CSS variables + the classes every
+ * overlay relies on. Per-overlay look lives in each overlay's style.css.
+ * Fork-brand by overriding the --sk-* vars. Background transparent for OBS. */
+:root {
+  --sk-accent: #5b8cff;
+  --sk-fg: #ffffff;
+  --sk-fg-dim: rgba(255, 255, 255, 0.62);
+  --sk-bg: rgba(12, 14, 20, 0.82);
+  --sk-radius: 14px;
+  --sk-font: ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --sk-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+}
+
+html, body { margin: 0; background: transparent; }
+.sk-overlay { font-family: var(--sk-font); -webkit-font-smoothing: antialiased; }
+.sk-hidden { display: none !important; }

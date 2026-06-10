@@ -1,0 +1,15 @@
+/* scene-control — compact status panel (readable as an OBS dock/source). */
+.sc-panel {
+  font-family: var(--sk-font, system-ui, sans-serif);
+  background: rgba(0, 0, 0, 0.78); color: #e6e6e6;
+  padding: 10px 12px; border-radius: 8px; width: 260px;
+  font-size: 13px; line-height: 1.5;
+}
+.sc-title { font-weight: 600; margin-bottom: 6px; color: #fff; }
+.sc-row { display: flex; justify-content: space-between; gap: 10px; }
+.sc-k { color: #9aa0a6; }
+.sc-v { color: #fff; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sc-v.ok { color: #00ff91; }
+.sc-v.warn { color: #ffd166; }
+.sc-v.err { color: #ff6b6b; }
+.sc-note { margin-top: 6px; color: #9aa0a6; font-size: 11px; min-height: 1em; }

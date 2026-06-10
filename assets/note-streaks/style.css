@@ -1,0 +1,9 @@
+/* note-streaks overlay styles */
+.sk-streaks { display: inline-flex; gap: 22px; align-items: flex-end;
+      background: var(--sk-bg); border-radius: var(--sk-radius); padding: 14px 20px;
+      box-shadow: var(--sk-shadow); color: var(--sk-fg); }
+    .sk-streaks .blk { text-align: center; }
+    .sk-streaks .num { font-size: 44px; font-weight: 800; line-height: 1; color: var(--sk-accent); }
+    .sk-streaks .num.cur { color: var(--sk-fg); }
+    .sk-streaks .lbl { font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--sk-fg-dim); margin-top: 6px; }

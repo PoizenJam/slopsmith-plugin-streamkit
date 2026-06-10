@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Stream Kit — Current Song (Advanced)</title>
+  <link rel="stylesheet" href="/api/plugins/stream_kit/assets/core/base.css" />
+  <link rel="stylesheet" href="/api/plugins/stream_kit/assets/current-song-advanced/style.css" />
+</head>
+<body class="sk-overlay">
+  <!-- Faithful port of PoizenJam's current_song_v3.1_LaS. -->
+  <div class="popup" id="popup">
+    <div class="mainContainer">
+      <img class="albumArt" id="art" alt="" />
+      <div class="songInfo">
+        <div class="songMarquee" id="marquee">
+          <a class="artistName" id="artist"></a><a class="songDash"> - </a><a class="songName" id="song"></a>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="statsLeft">
+          <div class="statsNAME" id="lblL">Notes:</div>
+          <div class="statsNUM"><a class="accuracy" id="numL"></a></div>
+        </div>
+        <div class="statsRight">
+          <div class="statsNAME" id="lblR">Streak:</div>
+          <div class="statsNUM"><a class="accuracy" id="numR"></a></div>
+        </div>
+      </div>
+      <div class="timer">
+        <div class="timerBar" id="bar"></div>
+        <div class="timestamps">
+          <a class="timeStamp" id="cur"></a>
+          <a class="tuningName" id="tuning"></a>
+          <a class="timeStamp" id="tot"></a>
+        </div>
+      </div>
+      <div id="resultWrap" style="display:none">
+        <a id="bestLine"></a>
+        <div class="feedback">
+          <div id="feedPrefix"></div>
+          <div id="feedMsg"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="/api/plugins/stream_kit/assets/core/sk-overlay-core.js"></script>
+  <script src="/api/plugins/stream_kit/assets/current-song-advanced/script.js"></script>
+</body>
+</html>
