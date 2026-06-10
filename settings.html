@@ -1,0 +1,27 @@
+<!-- Injected into a per-plugin <details> on the Settings page. Fragment, not a
+     full doc. Kept honest for v1: OBS scene automation lands in a later
+     milestone, so it's described, not shown as a working control. -->
+<div class="px-4 pb-4 pt-1 text-sm text-gray-300 space-y-4">
+  <div>
+    <h4 class="font-medium text-gray-200 mb-1">Overlays</h4>
+    <p class="text-gray-400">Add OBS Browser Sources pointing at:</p>
+    <code class="sk-url block mt-1">[host]/api/plugins/stream_kit/assets/overlay-nowplaying.html</code>
+  </div>
+
+  <div>
+    <h4 class="font-medium text-gray-200 mb-1">Theming</h4>
+    <p class="text-gray-400">
+      Overlays use neutral defaults. Override the <code>--sk-*</code> CSS variables
+      (accent, colors, font) to match your brand without forking code.
+    </p>
+  </div>
+
+  <div>
+    <h4 class="font-medium text-gray-200 mb-1">OBS scene automation</h4>
+    <p class="text-gray-400">
+      Planned (next milestone): browser-direct obs-websocket v5 from the player tab,
+      mapping playing / paused / results / browsing states to scenes. Off by default
+      when shipped. Not yet active in this build.
+    </p>
+  </div>
+</div>

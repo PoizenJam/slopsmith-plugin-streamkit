@@ -1,0 +1,51 @@
+{
+  "id": "stream_kit",
+  "name": "Stream Kit",
+  "version": "0.1.0",
+  "nav": {
+    "label": "Stream Kit",
+    "screen": "plugin-stream_kit"
+  },
+  "screen": "screen.html",
+  "script": "screen.js",
+  "styles": "assets/plugin.css",
+  "routes": "routes.py",
+  "settings": {
+    "html": "settings.html",
+    "server_files": [
+      "stream_kit/history.db"
+    ]
+  },
+  "standards": [
+    "capability-pipelines.v1"
+  ],
+  "capabilities": {
+    "now-playing": {
+      "roles": [
+        "observer",
+        "provider"
+      ],
+      "events": [
+        "state.changed"
+      ],
+      "mode": "active",
+      "ownership": "multi-provider",
+      "safety": "safe",
+      "version": 1
+    },
+    "playthrough-history": {
+      "roles": [
+        "owner",
+        "provider"
+      ],
+      "commands": [
+        "record",
+        "query"
+      ],
+      "mode": "active",
+      "ownership": "exclusive-owner",
+      "safety": "safe",
+      "version": 1
+    }
+  }
+}

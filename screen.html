@@ -1,0 +1,45 @@
+<!-- Injected as innerHTML of #plugin-stream_kit. A fragment, not a full doc.
+     Layout uses core Tailwind utilities (available globally) + scoped .sk-*
+     classes from assets/plugin.css. -->
+<div class="max-w-3xl mx-auto px-4 py-6 text-gray-200">
+  <h2 class="text-xl font-semibold mb-1">Stream Kit</h2>
+  <p class="text-sm text-gray-400 mb-6">
+    Now-playing &amp; playthrough overlays for OBS, plus playthrough history.
+    Add an OBS <em>Browser Source</em> pointed at the overlay URL below.
+  </p>
+
+  <section class="mb-6">
+    <h3 class="text-sm font-medium text-gray-300 mb-2">OBS overlay URLs</h3>
+    <p class="text-xs text-gray-500 mb-2">Add each as a Browser Source. Prefix with your <strong>http://</strong> player host.</p>
+    <code class="sk-url block">/api/plugins/stream_kit/assets/overlay-nowplaying.html</code>
+    <code class="sk-url block">/api/plugins/stream_kit/assets/overlay-current-song.html</code>
+    <code class="sk-url block">/api/plugins/stream_kit/assets/overlay-vocals.html</code>
+    <code class="sk-url block">/api/plugins/stream_kit/assets/overlay-note-streaks.html</code>
+    <code class="sk-url block">/api/plugins/stream_kit/assets/overlay-accuracy-chart.html</code>
+    <code class="sk-url block">/api/plugins/stream_kit/assets/overlay-current-measure.html</code>
+    <code class="sk-url block">/api/plugins/stream_kit/assets/overlay-timeline.html</code>
+    <code class="sk-url block">/api/plugins/stream_kit/assets/overlay-debug.html</code>
+    <p class="text-xs text-gray-500 mt-1">
+      Streaks &amp; accuracy need a note detector (e.g. slopsmith-plugin-notedetect) installed.
+    </p>
+  </section>
+
+  <section class="mb-6">
+    <h3 class="text-sm font-medium text-gray-300 mb-2">Live</h3>
+    <div data-sk-live class="sk-live bg-dark-700/40 border border-gray-800 rounded-xl p-4 text-sm">
+      <div class="sk-kv"><span>Phase</span><b>idle</b></div>
+    </div>
+  </section>
+
+  <section>
+    <h3 class="text-sm font-medium text-gray-300 mb-2">Recent playthroughs</h3>
+    <table class="sk-table w-full text-sm">
+      <thead>
+        <tr><th>Title</th><th>Artist</th><th>Instrument</th><th>Accuracy</th><th>Done</th></tr>
+      </thead>
+      <tbody data-sk-history>
+        <tr><td colspan="5" class="sk-empty">Loading…</td></tr>
+      </tbody>
+    </table>
+  </section>
+</div>

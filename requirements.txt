@@ -1,0 +1,4 @@
+# stream_kit has no third-party Python dependencies for v1.
+# OBS scene automation (later milestone) is browser-direct (obs-websocket v5
+# from the player tab), so it adds nothing here either. Standard library +
+# the FastAPI app the loader already provides is all that's used.
