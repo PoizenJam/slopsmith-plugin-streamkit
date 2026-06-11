@@ -85,8 +85,16 @@ tracker (per-section/phrase accuracy + previous-best), RockSniffer-parity histor
 
 Soft deps: vocals needs the `getLyrics()` core accessor; per-phrase/section
 coloring needs a note detector installed; reference-pitch/centOffset comes via
-PR #770. OBS scene automation remains deferred.
+PR #770. OBS scene automation (obs-websocket v5) is configured in plugin settings.
 
 ## License
 
-AGPL-3.0-only. Sign commits with DCO (`git commit -s`).
+MIT — see [LICENSE](LICENSE).
+
+## Acknowledgments
+
+The overlays adapt designs and logic from [RockSniffer](https://github.com/kokolihapihvi/RockSniffer)
+by kokolihapihvi (MIT) — by way of [RockSniffer_PJ](https://github.com/PoizenJam/RockSniffer),
+PoizenJam's fork that added the streamer overlays, playthrough tracking, and stat
+logging. Re-implemented for Slopsmith by PoizenJam, with development assistance
+from Claude (Anthropic).
